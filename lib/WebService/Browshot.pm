@@ -8,7 +8,7 @@ use LWP::UserAgent;
 use JSON;
 use URI::Encode qw(uri_encode);
 
-our $VERSION = '1.4.0';
+our $VERSION = '1.4.1';
 
 =head1 NAME
 
@@ -545,10 +545,10 @@ sub make_url {
 	my $action			= $args{action}		|| '';
 	my $parameters		= $args{parameters}	|| { };
 
-	my $url = $self->{_base} . "$action?key=" . uri_encode($self->{_key});
+	my $url = $self->{_base} . "$action?key=" . uri_encode($self->{_key}, 1);
 
 	foreach my $key (keys %$parameters) {
-		$url .= '&' . uri_encode($key) . '=' . uri_encode($parameters->{$key}) if (defined $parameters->{$key});
+		$url .= '&' . uri_encode($key) . '=' . uri_encode($parameters->{$key}, 1) if (defined $parameters->{$key});
 	}
 
 	$self->info($url);
@@ -588,6 +588,10 @@ sub generic_error {
 
 =over 4
 
+=item 1.4.1
+
+Fix URI encoding.
+
 =item 1.4.0
 
 Add C<simple> and C<simple_file> methods.
@@ -612,7 +616,7 @@ Julien Sobrier, E<lt>julien@sobrier.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011 by Julien Sobrier
+Copyright (C) 2012 by Julien Sobrier
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
