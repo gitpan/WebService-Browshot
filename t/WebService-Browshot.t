@@ -5,7 +5,7 @@
 
 use Data::Dumper;
 
-use Test::More tests => 175;
+use Test::More;
 use lib '../lib/';
 BEGIN { use_ok( 'WebService::Browshot' ); }
 require_ok( 'WebService::Browshot' );
@@ -317,6 +317,7 @@ SKIP: {
 
 		my $thumbnail = $browshot->screenshot_thumbnail(id => $screenshot_id, width => 640);
 		ok( $thumbnail ne '', 						"Thumbnail was successful");
+		ok( length($thumbnail) > 100,				"Thumbnail was successful");
 		is ( substr($thumbnail, 1, 3), 'PNG',		"Valid PNG file");
 	}
 
@@ -374,4 +375,4 @@ SKIP: {
 	ok( exists $account->{error}, 				"Missing key");
 }
 
-# done_testing(138);
+done_testing;
