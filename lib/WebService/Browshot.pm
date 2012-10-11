@@ -8,7 +8,7 @@ use LWP::UserAgent;
 use JSON;
 use URI::Encode qw(uri_encode);
 
-our $VERSION = '1.9.3';
+our $VERSION = '1.9.4';
 
 =head1 NAME
 
@@ -112,9 +112,9 @@ sub api_version {
 
    $browshot->simple(url => 'http://mobilito.net')
 
-Retrieve a screenshot in one function. Note: by default, screenshots are cached for 24 hours. You can tune this valu with the cache=X parameter.
+Retrieve a screenshot in one function. Note: by default, screenshots are cached for 24 hours. You can tune this value with the cache=X parameter.
 
-Return an aray (status code, PNG). See L<http://browshot.com/api/documentation#simple> for the list of possible status codes.
+Return an array (status code, PNG). See L<http://browshot.com/api/documentation#simple> for the list of possible status codes.
 
 Arguments:
 
@@ -147,9 +147,9 @@ sub simple {
 
    $browshot->simple_file(url => 'http://mobilito.net', file => '/tmp/mobilito.png')
 
-Retrieve a screenshot and save it localy in one function. Note: by default, screenshots are cached for 24 hours. You can tune this valu with the cache=X parameter.
+Retrieve a screenshot and save it locally in one function. Note: by default, screenshots are cached for 24 hours. You can tune this valu with the cache=X parameter.
 
-Return an aray (status code, file name). The file name is empty if the screenshot wasa not retrieved. See L<http://browshot.com/api/documentation#simple> for the list of possible status codes.
+Return an array (status code, file name). The file name is empty if the screenshot was not retrieved. See L<http://browshot.com/api/documentation#simple> for the list of possible status codes.
 
 Arguments:
 
@@ -445,6 +445,14 @@ sub screenshot_thumbnail {
 	if (exists($args{url}) && $args{url} =~ /image\/(\d+)\?/i && ! exists($args{id})) {
 		# get ID from url
 		$args{id} = $1;
+
+		if ($args{url}  =~ /&width=(\d+)\?/i && ! exists($args{width})) {
+				$args{width} = $1;
+		}
+		if ($args{url}  =~ /&height=(\d+)\?/i && ! exists($args{height})) {
+				$args{height} = $1;
+		}
+		
 	}
 	elsif(! exists($args{id}) ) {
 		$self->error("Missing id and url in screenshot_thumbnail");
@@ -591,7 +599,7 @@ sub return_reply {
 		return $info;
 	}
 	else {
-		$self->error("Server sent back an error: " . $res->status_code);
+		$self->error("Server sent back an error: " . $res->code);
 		return $self->generic_error($res->as_string);
 	}
 }
@@ -644,9 +652,13 @@ sub generic_error {
 
 =over 4
 
+=item 1.9.4
+
+Fix status code in error messages.
+
 =item 1.9.3
 
-Keep backward compatiblity for C<screenshot_thumbnail>.
+Keep backward compatibility for C<screenshot_thumbnail>.
 
 =item 1.9.0
 
