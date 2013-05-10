@@ -8,7 +8,13 @@ use LWP::UserAgent;
 use JSON;
 use URI::Encode qw(uri_encode);
 
-our $VERSION = '1.10.0';
+use IO::Socket::SSL;
+IO::Socket::SSL::set_ctx_defaults( 
+     SSL_verifycn_scheme => 'www', 
+     SSL_verify_mode => 0,
+);
+
+our $VERSION = '1.11.0';
 
 =head1 NAME
 
@@ -62,7 +68,13 @@ Required.  API key.
 
 Optional. Set to 1 to print debug output to the standard output. 0 (disabled) by default.
 
+=item timeout
+
+Optional. Set the request timeout - in seconds - against the API. Defaults to 90s.
+
 =back
+
+C<last_error> contasin the last error message, it is NEVER reset, i.e last_error may not be empty after a succesfull API call if an earlier call failed.
 
 =cut
 
@@ -70,7 +82,7 @@ sub new {
   	my ($self, %args) = @_;
 
 	my $ua = LWP::UserAgent->new();
-	$ua->timeout(90);
+	$ua->timeout($args{'timeout'} || 90);
 	$ua->env_proxy;
 	$ua->max_redirect(32); # for the simple API only
 	$ua->agent("WebService::Browshot $VERSION");
@@ -404,7 +416,7 @@ Required. Screenshot ID.
 
 sub screenshot_host {
 	my ($self, %args) 	= @_;
-	my $id				= $args{id}	|| $self->error("Missing id in screenshot_host");
+	my $id			= $args{id}	|| $self->error("Missing id in screenshot_host");
 
 	return $self->return_reply(action => 'screenshot/host', parameters => { %args });
 }
@@ -560,7 +572,7 @@ sub screenshot_share {
 
   $browshot->screenshot_delete(id => 12345, data => 'url,metadata')
 
-Delete delais of a screenshot. See L<http://browshot.com/api/documentation#screenshot_delete> for the response format.
+Delete details of a screenshot. See L<http://browshot.com/api/documentation#screenshot_delete> for the response format.
 
 Arguments:
 
@@ -686,6 +698,10 @@ sub generic_error {
 =head1 CHANGES
 
 =over 4
+
+=item 1.11
+
+Compatible with API 1.11. Option HTTP timeout.
 
 =item 1.10
 
