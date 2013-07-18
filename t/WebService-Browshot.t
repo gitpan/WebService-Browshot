@@ -12,9 +12,9 @@ require_ok( 'WebService::Browshot' );
 
 
 my $browshot = WebService::Browshot->new(
-	key		=> 'vPTtKKLBtPUNxVwwfEKlVvekuxHyTXyi', # test1
+	key	=> 'vPTtKKLBtPUNxVwwfEKlVvekuxHyTXyi', # test1
 # 	base	=> 'http://api.browshot.com/api/v1/',
-# 	debug	=> 1,
+	debug	=> 0,
 );
 
 is($browshot->api_version(), '1.11', "API version");
@@ -31,33 +31,33 @@ SKIP: {
     skip "Unable to access https://browshot.com/", 134 if (! $response->is_success);
 
 	my ($code, $png) = $browshot->simple(url => 'http://mobilito.net/', cache => 60 * 60 * 24 * 365); # cached for a year
-	ok( $code == 200, 								"Screenshot should be succesful: $code");
-	ok( length($png) > 0, 							"Screenshot should be succesful");
+	ok( $code == 200, 					"Screenshot should be succesful: $code");
+	ok( length($png) > 0, 					"Screenshot should be succesful");
 
     my $instances = $browshot->instance_list();
 	
-	ok( exists $instances->{free}, 					"List of free instances available");
-	ok( exists $instances->{shared}, 				"List of shared instances available");
-	ok( exists $instances->{private}, 				"List of private instances available");
+	ok( exists $instances->{free}, 				"List of free instances available");
+	ok( exists $instances->{shared}, 			"List of shared instances available");
+	ok( exists $instances->{private}, 			"List of private instances available");
 
 	ok( scalar(@{$instances->{free}}) > 0, 			"At least one free instance is available");
 	ok( scalar(@{$instances->{shared}}) > 0, 		"At least one shared instance is available");
 	ok( scalar(@{$instances->{private}}) == 0, 		"No private instance is available");
 
 	my $free = $instances->{free}->[0];
-	ok( exists $free->{id}, 						"Instance ID is present");
-	ok( exists $free->{width}, 						"Instance width is present");
-	ok( exists $free->{height}, 					"Instance height is present");
-	ok( exists $free->{load}, 						"Instance load is present");
-	ok( exists $free->{browser}, 					"Instance browser is present");
-	ok( exists $free->{browser}->{id}, 				"Instance browser ID is present");
+	ok( exists $free->{id}, 				"Instance ID is present");
+	ok( exists $free->{width}, 				"Instance width is present");
+	ok( exists $free->{height}, 				"Instance height is present");
+	ok( exists $free->{load}, 				"Instance load is present");
+	ok( exists $free->{browser}, 				"Instance browser is present");
+	ok( exists $free->{browser}->{id}, 			"Instance browser ID is present");
 	ok( exists $free->{browser}->{name}, 			"Instance browser name is present");
 	ok( exists $free->{browser}->{javascript}, 		"Instance browser javascript is present");
 	ok( exists $free->{browser}->{flash}, 			"Instance browser flash is present");
 	ok( exists $free->{browser}->{mobile}, 			"Instance browser mobile is present");
-	ok( exists $free->{type}, 						"Instance type is present");
+	ok( exists $free->{type}, 				"Instance type is present");
 	ok( exists $free->{screenshot_cost}, 			"Instance screenshot_cost is present");
-	ok( $free->{screenshot_cost} == 0, 				"Instance cost is 0");
+	ok( $free->{screenshot_cost} == 0, 			"Instance cost is 0");
 
 
 
@@ -370,16 +370,16 @@ SKIP: {
 
 	# Account information
 	my $account = $browshot->account_info();
-	ok( exists $account->{balance}, 				"Account balance is present");
-	is( $account->{balance}, 0, 					"Balance is empty");
-	ok( exists $account->{active}, 					"Account active is present");
-	is( $account->{active}, 1, 						"Account is active");
-	ok( exists $account->{instances}, 				"Account instances is present");
-	ok( exists $account->{free_screenshots_left}, 	"Free screenshots is present");
+	ok( exists $account->{balance}, 			"Account balance is present");
+	is( $account->{balance}, 0, 				"Balance is empty");
+	ok( exists $account->{active}, 				"Account active is present");
+	is( $account->{active}, 1, 				"Account is active");
+	ok( exists $account->{instances}, 			"Account instances is present");
+	ok( exists $account->{free_screenshots_left}, 		"Free screenshots is present");
 	ok( $account->{free_screenshots_left} > 0,		"Free screenshots left");
 	is( $account->{private_instances}, 0, 			"Private instances disabled");
-	is( $account->{hosting_s3}, 0, 					"S3 hosting disabled");
-	is( $account->{hosting_cdn}, 0, 				"CDN hosting disabled");
+	is( $account->{hosting_s3}, 0, 				"S3 hosting disabled");
+	is( $account->{hosting_cdn}, 0, 			"CDN hosting disabled");
 	is( $account->{hosting_browshot}, 0, 			"Browshot hosting disabled");
 
 

@@ -14,7 +14,7 @@ IO::Socket::SSL::set_ctx_defaults(
      SSL_verify_mode => 0,
 );
 
-our $VERSION = '1.11.0';
+our $VERSION = '1.11.1';
 
 =head1 NAME
 
@@ -647,7 +647,15 @@ sub return_reply {
 	}
 	else {
 		$self->error("Server sent back an error: " . $res->code);
-		return $self->generic_error($res->as_string);
+		my $info;
+		eval {
+			$info = decode_json($res->decoded_content);
+		};
+		if ($@) {
+		  return $self->generic_error($res->as_string);
+		}
+
+		return $info;
 	}
 }
 
@@ -698,6 +706,10 @@ sub generic_error {
 =head1 CHANGES
 
 =over 4
+
+=item 1.11.1
+
+Return Browshot response in case of error if the reply is valid JSON.
 
 =item 1.11
 
