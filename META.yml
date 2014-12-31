@@ -1,5 +1,5 @@
 ---
-abstract: 'Perl extension for Browshot (L<http://www.browshot.com/>), a web service to create website screenshots.'
+abstract: 'Perl extension for Browshot (L<https://browshot.com/>), a web service to create screenshots of web pages.'
 author:
   - 'Julien Sobrier <julien@sobrier.net>'
 build_requires:
@@ -23,4 +23,4 @@ requires:
   LWP::Protocol::https: 0
   LWP::UserAgent: 0
   URI::Encode: 0
-version: v1.14.0
+version: v1.14.1
